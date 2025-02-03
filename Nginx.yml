@@ -1,0 +1,39 @@
+---
+- name: Install and Configure Nginx
+  hosts: server
+  become: true
+  tasks:
+    - name: Create a directory
+      file:
+        path: /var/www/mydirectory
+        state: directory
+        mode: '0755'
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx Service
+      service:
+        name: nginx
+        state: started
+
+    - name: Download a zip file
+      get_url:
+        url: https://www.tooplate.com/zip-templates/2137_barista_cafe.zip
+        dest: /var/www/mydirectory/2137_barista_cafe.zip
+        mode: '0644'
+
+    - name: Unzip the downloaded file
+      unarchive:
+        src: /var/www/mydirectory/2137_barista_cafe.zip
+        dest: /var/www/mydirectory/
+        remote_src: yes
+
+    - name: Copy extracted contents to /var/www/html
+      copy:
+        src: /var/www/mydirectory/2137_barista_cafe/
+        dest: /var/www/html/
+        remote_src: yes
+
